@@ -3,7 +3,6 @@ on:
   push:
     branches: [ main ]
 
-# Required for Workload Identity Federation (OIDC)
 permissions:
   contents: read
   id-token: write
@@ -18,12 +17,12 @@ jobs:
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
         with:
-          # Your specific Project Number and Provider details
+          # This flag is crucial for gsutil to find the credentials
+          create_credentials_file: true
           workload_identity_provider: 'projects/850163145182/locations/global/workloadIdentityPools/github-pool/providers/github-provider'
           service_account: 'github-actions-deployer@project-a61a9ba7-3a32-4128-913.iam.gserviceaccount.com'
 
       - name: Upload to GCS
         run: |
-          # Syncs your repo to your bucket
-          # -m (multi-thread) -d (delete removed files) -R (recursive)
-          gsutil -m rsync -d -R . gs://devops-portfolio-irshad
+          # -x ignores the .git folder and the temporary credential files
+          gsutil -m rsync -d -R -x '\.git.*|.*gha-creds-.*\.json' . gs://devops-portfolio-irshad
