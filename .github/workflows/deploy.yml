@@ -3,6 +3,7 @@ on:
   push:
     branches: [ main ]
 
+# Required for Workload Identity Federation (OIDC)
 permissions:
   contents: read
   id-token: write
@@ -17,10 +18,12 @@ jobs:
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
         with:
+          # Your specific Project Number and Provider details
           workload_identity_provider: 'projects/850163145182/locations/global/workloadIdentityPools/github-pool/providers/github-provider'
           service_account: 'github-actions-deployer@project-a61a9ba7-3a32-4128-913.iam.gserviceaccount.com'
 
       - name: Upload to GCS
         run: |
-          # Replace 'YOUR_BUCKET_NAME' with your actual bucket name
-          gsutil -m rsync -d -R . gs://YOUR_BUCKET_NAME
+          # Syncs your repo to your bucket
+          # -m (multi-thread) -d (delete removed files) -R (recursive)
+          gsutil -m rsync -d -R . gs://devops-portfolio-irshad
