@@ -17,12 +17,12 @@ jobs:
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
         with:
-          # This flag is crucial for gsutil to find the credentials
-          create_credentials_file: true
           workload_identity_provider: 'projects/850163145182/locations/global/workloadIdentityPools/github-pool/providers/github-provider'
           service_account: 'github-actions-deployer@project-a61a9ba7-3a32-4128-913.iam.gserviceaccount.com'
+          # These two lines are the "secret sauce" to fix the 401 error
+          create_credentials_file: true
+          export_default_credentials: true
 
       - name: Upload to GCS
         run: |
-          # -x ignores the .git folder and the temporary credential files
           gsutil -m rsync -d -R -x '\.git.*|.*gha-creds-.*\.json' . gs://devops-portfolio-irshad
