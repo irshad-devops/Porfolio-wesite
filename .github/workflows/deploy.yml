@@ -22,5 +22,5 @@ jobs:
 
       - name: Upload to GCS
         run: |
-          # REPLACE 'irshad-portfolio-bucket' with your actual bucket name
-          gsutil -m rsync -d -R . gs://irshad-portfolio-bucket
+          # Replace 'YOUR_BUCKET_NAME' with your actual bucket name
+          gsutil -m rsync -d -R . gs://YOUR_BUCKET_NAME
